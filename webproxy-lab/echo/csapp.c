@@ -957,9 +957,9 @@ int open_clientfd(char *hostname, char *port) {
     struct addrinfo hints, *listp, *p;
 
     /* Get a list of potential server addresses */
-    memset(&hints, 0, sizeof(struct addrinfo));
-    hints.ai_socktype = SOCK_STREAM;  /* Open a connection */
-    hints.ai_flags = AI_NUMERICSERV;  /* ... using a numeric port arg. */
+    memset(&hints, 0, sizeof(struct addrinfo)); // 구조체를 모두 `0`으로 초기화 시킨다.
+    hints.ai_socktype = SOCK_STREAM;  // TCP 연결을 하겠다는 의미이다.
+    hints.ai_flags = AI_NUMERICSERV;  // 문자열 포트가 아닌 숫자로 해석하겠다. http (X) 80 (O)
     hints.ai_flags |= AI_ADDRCONFIG;  /* Recommended for connections */
     if ((rc = getaddrinfo(hostname, port, &hints, &listp)) != 0) {
         fprintf(stderr, "getaddrinfo failed (%s:%s): %s\n", hostname, port, gai_strerror(rc));
@@ -969,10 +969,13 @@ int open_clientfd(char *hostname, char *port) {
     /* Walk the list for one that we can successfully connect to */
     for (p = listp; p; p = p->ai_next) {
         /* Create a socket descriptor */
+        // socket 함수를 사용하여, getaddinfo로 사용한 구조체 기반으로 소켓 생성
+        // 소켓에 대한 파일 디스크립터 생성 
         if ((clientfd = socket(p->ai_family, p->ai_socktype, p->ai_protocol)) < 0) 
             continue; /* Socket failed, try the next */
 
         /* Connect to the server */
+        // connect 호출하여, 소켓 정보 기반으로 서버와 TCP 연결 수행
         if (connect(clientfd, p->ai_addr, p->ai_addrlen) != -1) 
             break; /* Success */
         if (close(clientfd) < 0) { /* Connect failed, try another */  //line:netp:openclientfd:closefd
@@ -1009,7 +1012,9 @@ int open_listenfd(char *port)
     hints.ai_socktype = SOCK_STREAM;             /* Accept connections */
     hints.ai_flags = AI_PASSIVE | AI_ADDRCONFIG; /* ... on any IP address */
     hints.ai_flags |= AI_NUMERICSERV;            /* ... using port number */
-    if ((rc = getaddrinfo(NULL, port, &hints, &listp)) != 0) {
+
+    //null 인자로 와일드 카드로 설정하여 모든 인자에 대해 바인드가능 주소 구조체를 rc에 반환
+    if ((rc = getaddrinfo(NULL, port, &hints, &listp)) != 0) { 
         fprintf(stderr, "getaddrinfo failed (port %s): %s\n", port, gai_strerror(rc));
         return -2;
     }
