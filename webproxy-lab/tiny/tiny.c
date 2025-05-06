@@ -205,17 +205,17 @@ void serve_static(int fd, char *filename, int filesize, int is_head)
 
     // * mmap 을 사용하여 파일 메모리를 매핑하는 방식 
     // * 속도 면에서 커널의 파일을 읽어오는 건 이게 더 빠름
-    // srcp = Mmap(0, filesize, PROT_READ, MAP_PRIVATE, srcfd, 0);
-    // Close(srcfd);
-    // Rio_writen(fd, srcp, filesize);
-    // Munmap(srcp, filesize);
+    srcp = Mmap(0, filesize, PROT_READ, MAP_PRIVATE, srcfd, 0);
+    Close(srcfd);
+    Rio_writen(fd, srcp, filesize);
+    Munmap(srcp, filesize);
 
     // *말록을 통한 파일에 동적메모리를 할당하는 방식
-    char *buf_m = malloc(filesize);
-    Rio_readn(srcfd, buf_m, filesize);
-    Close(srcfd);
-    Rio_writen(fd, buf_m, filesize);
-    Free(buf_m);
+    // char *buf_m = malloc(filesize);
+    // Rio_readn(srcfd, buf_m, filesize);
+    // Close(srcfd);
+    // Rio_writen(fd, buf_m, filesize);
+    // Free(buf_m);
   }
 }
 
