@@ -11,6 +11,9 @@ all: tiny cgi
 tiny: tiny.c csapp.o
 	$(CC) $(CFLAGS) -o tiny tiny.c csapp.o $(LIB)
 
+cache: cache.c csapp.o
+	$(CC) $(CFLAGS) -o po cache cache.c csapp.o $(LIB)
+
 csapp.o: csapp.c
 	$(CC) $(CFLAGS) -c csapp.c
 

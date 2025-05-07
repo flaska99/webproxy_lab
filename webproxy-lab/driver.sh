@@ -29,7 +29,7 @@ MAX_PORT_TRIES=10
 BASIC_LIST="home.html
             csapp.c
             tiny.c
-            img.gif
+            godzilla.jpg
             tiny"
 
 # List of text files for the cache test
@@ -406,4 +406,3 @@ maxScore=`expr ${MAX_BASIC} + ${MAX_CACHE} + ${MAX_CONCURRENCY}`
 echo ""
 echo "totalScore: ${totalScore}/${maxScore}"
 exit
-
